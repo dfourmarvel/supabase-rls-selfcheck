@@ -1,0 +1,8 @@
+{
+  "name": "supabase-rls-selfcheck",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/parse.test.mjs"
+  }
+}

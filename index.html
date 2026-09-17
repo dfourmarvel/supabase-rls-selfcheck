@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Supabase RLS self-check</title>
+  <meta name="description" content="A free, read-only check of your Supabase Row Level Security setup. Run one query, paste the results, get fixes in plain English.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f54d6'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#run">Skip to the check</a>
+
+  <header class="bar">
+    <div class="wrap bar-inner">
+      <a class="brand" href="./">RLS self-check</a>
+      <nav aria-label="Primary">
+        <a href="#run">Run it</a>
+        <a href="#checks">What it checks</a>
+        <a class="gh" href="https://github.com/dfourmarvel/supabase-rls-selfcheck"><i class="ph ph-github-logo" aria-hidden="true"></i><span>Source</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <h1>RLS is on. Can User A still read User B's data?</h1>
+        <p class="lede">A free, read-only check for Supabase projects. Run one query, paste the results, get fixes in plain English.</p>
+        <div class="actions">
+          <a class="btn primary" href="#run">Get the query <i class="ph ph-arrow-down" aria-hidden="true"></i></a>
+          <a class="btn ghost" href="https://github.com/dfourmarvel/supabase-rls-selfcheck">Read the source</a>
+        </div>
+      </div>
+      <figure class="hero-preview" aria-label="Example report">
+        <div class="preview-head">
+          <span>Example result</span>
+          <span class="preview-counts" id="preview-counts"></span>
+        </div>
+        <ol class="findings compact" id="preview"></ol>
+      </figure>
+    </section>
+
+    <section class="run" id="run">
+      <div class="wrap run-grid">
+        <div class="step">
+          <h2>Run the query</h2>
+          <p>In your Supabase dashboard, open <strong>SQL Editor</strong>, paste this, and press Run. It only reads settings: table names, policies, grants and functions. It never selects a row of your data.</p>
+          <div class="code-card">
+            <div class="code-head">
+              <span>rls-selfcheck.sql</span>
+              <button class="btn small" type="button" id="copy-sql" disabled><i class="ph ph-copy" aria-hidden="true"></i><span>Copy query</span></button>
+            </div>
+            <pre class="code" tabindex="0" aria-label="The self-check query"><code id="sql">Loading the query…</code></pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <h2>Paste the results</h2>
+          <p>In the results panel, use <strong>Export</strong> and copy as JSON, CSV or markdown. Copying the cells directly works too.</p>
+          <form id="paste-form" novalidate>
+            <label for="results">Query results</label>
+            <textarea id="results" rows="9" spellcheck="false" aria-describedby="results-help results-error"></textarea>
+            <p class="help" id="results-help"><i class="ph ph-lock-simple" aria-hidden="true"></i> Read in your browser. Nothing is uploaded or stored.</p>
+            <p class="error" id="results-error" role="alert"></p>
+            <div class="actions">
+              <button class="btn primary" type="submit">Read results</button>
+              <button class="btn ghost" type="button" id="use-sample">Try the example</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="report wrap" id="report" hidden aria-live="polite">
+      <div class="report-head">
+        <h2 id="report-title">Your results</h2>
+        <ul class="tally" id="tally"></ul>
+      </div>
+      <ol class="findings" id="findings"></ol>
+      <p class="scope" id="scope" hidden></p>
+      <p class="clean" id="clean" hidden>
+        <i class="ph ph-check-circle" aria-hidden="true"></i>
+        No configuration problems found. That means the settings look right. It doesn't prove User A can't reach User B's data.
+      </p>
+    </section>
+
+    <section class="checks" id="checks">
+      <div class="wrap">
+        <h2>What it looks for</h2>
+        <dl class="check-list" id="check-list"></dl>
+      </div>
+    </section>
+
+    <section class="limits wrap">
+      <div class="limits-inner">
+        <h2>What a query can't see</h2>
+        <p>A policy can pass every check here and still be beaten. Two I found while hardening my own marketplace app looked correct on paper: an own-row update that rewrites a role column, and an ownership check that rests on a value the user can change. Catching those takes two real accounts attacking a staging copy.</p>
+        <p>That's the audit I run: fixed price, staging only, a written report with the fixes, and I never take your service_role key.</p>
+        <a class="btn primary" id="contact" href="https://github.com/dfourmarvel">Ask about an audit</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <p>MIT licensed. Not affiliated with Supabase. Built by <a href="https://github.com/dfourmarvel">dfourmarvel</a>.</p>
+  </footer>
+</body>
+</html>

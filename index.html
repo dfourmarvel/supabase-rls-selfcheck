@@ -102,9 +102,12 @@
     <section class="limits wrap">
       <div class="limits-inner">
         <h2>What a query can't see</h2>
-        <p>A policy can pass every check here and still be beaten. Two I found while hardening my own marketplace app looked correct on paper: an own-row update that rewrites a role column, and an ownership check that rests on a value the user can change. Catching those takes two real accounts attacking a staging copy.</p>
+        <p>A policy can pass every check here and still be beaten. I've found several RLS bugs in my own projects, and the worst looked correct on paper: an own-row update that rewrites a role column, and an ownership check that rests on a value the user can change. Catching those takes two real accounts attacking a staging copy.</p>
         <p>That's the audit I run: fixed price, staging only, a written report with the fixes, and I never take your service_role key.</p>
-        <a class="btn primary" id="contact" href="https://github.com/dfourmarvel">Ask about an audit</a>
+        <div class="actions contact">
+          <a class="btn primary" href="https://www.linkedin.com/in/dfour" rel="noopener">Ask about an audit</a>
+          <p>or email <a href="mailto:danieldeladzikunu@gmail.com?subject=RLS%20audit">danieldeladzikunu@gmail.com</a></p>
+        </div>
       </div>
     </section>
   </main>
